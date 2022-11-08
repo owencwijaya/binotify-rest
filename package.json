@@ -1,0 +1,15 @@
+{
+    "name": "binotify-rest",
+    "version": "1.0.0",
+    "description": "REST API for BiNotify",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index"
+    },
+    "author": "Muhammad Risqi Firdaus, Hafidz Rahman Nur Ghozali, Owen Christian Wijaya",
+    "dependencies": {
+        "body-parser": "^1.20.0",
+        "express": "^4.18.2",
+        "morgan": "^1.10.0"
+    }
+}
