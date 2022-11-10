@@ -1,12 +1,29 @@
 version: '3.8'
 
 services:
-  app:
-    container_name: binotify-rest
-    image: binotify-rest:latest
+  db:
+    container_name: db-binotify-rest
     build:
       context: .
+      dockerfile: db.Dockerfile
+    image: db-binotify-rest:latest
+    environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MARIADB_ROOT_PASSWORD: root
+      MYSQL_DATABASE: binotify-rest
+    ports:
+      - 3312:3312
+
+  server:
+    container_name: server-binotify-rest
+    image: server-binotify-rest:latest
+    build:
+      context: .
+      dockerfile: server.Dockerfile
     volumes:
       - ./:/app
     ports:
       - 3000:3000
+    depends_on:
+      - db

@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const http = require('http');
 
+
 const HOST = '0.0.0.0';
 const PORT = 3000;
 const app = express();
@@ -23,6 +24,8 @@ app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
 
 const server = http.createServer(app);
+
+const conn = require('./db/connect.js')
 
 server.listen(PORT, HOST, () => {
     console.log(`Server running at https://${HOST}:${PORT}`)
