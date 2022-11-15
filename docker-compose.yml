@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  db:
+    container_name: db-binotify-rest
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    image: db-binotify-rest:latest
+    environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MARIADB_ROOT_PASSWORD: root
+      MYSQL_DATABASE: binotify-rest
+    ports:
+      - 3312:3312
+      
+
   server:
     container_name: server-binotify-rest
     image: server-binotify-rest:latest
@@ -10,6 +25,7 @@ services:
     volumes:
       - ./:/app
     ports:
-      - 3001:3001
+      - 3000:3000
     depends_on:
       - db
+    command: bash -c 'while !</dev/tcp/db/3306; do sleep 1; done; npm start'

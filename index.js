@@ -6,7 +6,7 @@ const http = require('http');
 const HOST = '0.0.0.0';
 const PORT = 3000;
 const app = express();
-
+const conn = require('./db/connect.js')
 
 app.use("/", (req, res) => {
     res.statusCode = 200;
@@ -25,7 +25,7 @@ app.use(express.static(__dirname + '/public'));
 
 const server = http.createServer(app);
 
-const conn = require('./db/connect.js')
+
 
 server.listen(PORT, HOST, () => {
     console.log(`Server running at https://${HOST}:${PORT}`)

@@ -1,9 +1,11 @@
 const mysql = require("mysql");
 
+
+
 const conn = mysql.createConnection({
-    host: 'db-binotify',
-    user: 'root',
-    password: 'root',
+    host: 'db-binotify-rest',
+    user: 'admin',
+    password: 'admin',
     database: 'binotify-rest',
 });
 
