@@ -1,11 +1,10 @@
 const mysql = require("mysql");
 
-
-
 const conn = mysql.createConnection({
-    host: 'db-binotify-rest',
-    user: 'admin',
-    password: 'admin',
+    host: 'host.docker.internal',
+    port: '8042',
+    user: 'root',
+    password: 'root',
     database: 'binotify-rest',
 });
 
