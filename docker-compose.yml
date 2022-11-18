@@ -1,23 +1,66 @@
-version: '3.8'
+# version: '3.8'
+
+# services:
+#   server:
+#     container_name: server-binotify-rest
+#     image: server-binotify-rest:latest
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     volumes:
+#       - ./:/app
+
+#     ports:
+#        - 3000:3000
+
+#     extra_hosts:
+#       - "host.docker.internal:host-gateway"
+
+#     environment:
+#       - JWT_SECRET=12345-67890-09876-54321
+#       - DB_HOST=host.docker.internal
+#       - DB_USER=root
+#       - DB_PASSWORD=root
+#       - DB_NAME=binotify-rest
+#       - DB_PORT=3312
+
+version: "3.8"
 
 services:
+  mongodb:
+    container_name: mongodb
+    image: mongo:5.0.2
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$DB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$DB_PASSWORD
+    ports:
+      - 27017:27017
+    volumes:
+      - db:/data/db
+      
   server:
-    container_name: server-binotify-rest
+    container_name: server
+    depends_on:
+      - mongodb
     image: server-binotify-rest:latest
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - ./:/app
-
+    restart: unless-stopped
+    env_file: ./.env
     ports:
-       - 3000:3000
+      - 30000:3000
+    environment:
+      - JWT_SECRET=$JWT_SECRET
+      - DB_HOST=mongodb
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_NAME=$DB_DATABASE
+      - DB_PORT=27017
+    stdin_open: true
+    tty: true
 
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-  
-networks:
-  binotify-config_some-net:
-    external: true
-  
-
+volumes:
+  db:

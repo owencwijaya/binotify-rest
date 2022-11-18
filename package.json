@@ -8,9 +8,15 @@
     },
     "author": "Muhammad Risqi Firdaus, Hafidz Rahman Nur Ghozali, Owen Christian Wijaya",
     "dependencies": {
-        "body-parser": "^1.20.0",
+        "body-parser": "^1.20.1",
+        "dotenv": "^16.0.3",
         "express": "^4.18.2",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.7.2",
         "morgan": "^1.10.0",
-        "mysql": "^2.18.1"
+        "mysql": "^2.18.1",
+        "passport": "^0.6.0",
+        "passport-jwt": "^4.0.0",
+        "passport-local": "^1.0.0"
     }
 }
