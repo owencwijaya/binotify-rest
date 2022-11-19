@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const songSchema = require('./song');
+
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
 
