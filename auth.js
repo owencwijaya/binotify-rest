@@ -1,14 +1,20 @@
-const LocalStrategy = require('passport-local').Strategy;
-
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
-
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const dotenv = require('dotenv');
+
+const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+
+const User = require('./schema/user')
+
 dotenv.config();
 
-passport.use(new LocalStrategy)
+passport.use(new LocalStrategy(User.authenticate()));
+// passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 exports.getToken = (user) => {
     return jwt.seign(user, process.env.JWT_SECRET, {expiresIn: 3600})

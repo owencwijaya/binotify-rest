@@ -1,29 +1,3 @@
-# version: '3.8'
-
-# services:
-#   server:
-#     container_name: server-binotify-rest
-#     image: server-binotify-rest:latest
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#     volumes:
-#       - ./:/app
-
-#     ports:
-#        - 3000:3000
-
-#     extra_hosts:
-#       - "host.docker.internal:host-gateway"
-
-#     environment:
-#       - JWT_SECRET=12345-67890-09876-54321
-#       - DB_HOST=host.docker.internal
-#       - DB_USER=root
-#       - DB_PASSWORD=root
-#       - DB_NAME=binotify-rest
-#       - DB_PORT=3312
-
 version: "3.8"
 
 services:
@@ -37,8 +11,22 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=$DB_PASSWORD
     ports:
       - 27017:27017
-    volumes:
-      - db:/data/db
+    # volumes:
+    #   - db:/data/db
+  
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    restart: always
+    env_file: ./.env
+    ports:
+      - 8081:8081
+    depends_on:
+      - server
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=$DB_USER
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=$DB_PASSWORD
+      - ME_CONFIG_MONGODB_SERVER=mongodb
       
   server:
     container_name: server
@@ -51,7 +39,7 @@ services:
     restart: unless-stopped
     env_file: ./.env
     ports:
-      - 30000:3000
+      - 3000:3000
     environment:
       - JWT_SECRET=$JWT_SECRET
       - DB_HOST=mongodb
@@ -62,5 +50,5 @@ services:
     stdin_open: true
     tty: true
 
-volumes:
-  db:
+# volumes:
+#   db:
