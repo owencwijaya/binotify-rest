@@ -17,6 +17,7 @@ const User = require('./schema/user');
 const HOST = '0.0.0.0';
 const PORT = 3000;
 
+const authRouter = require('./routes/authRouter');
 const userRouter = require('./routes/userRouter');
 
 
@@ -62,7 +63,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+app.use('/auth', authRouter);
 app.use('/users', userRouter);
 
 app.use("/", (req, res) => {

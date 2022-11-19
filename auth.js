@@ -17,7 +17,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 exports.getToken = (user) => {
-    return jwt.seign(user, process.env.JWT_SECRET, {expiresIn: 3600})
+    return jwt.sign(user, process.env.JWT_SECRET, {expiresIn: 3600})
 }
 
 var options = {};
