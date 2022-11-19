@@ -4,12 +4,11 @@ const passport = require("passport");
 
 const User = require("../schema/user");
 const auth = require("../auth");
-const { Router } = require("express");
 
 const authRouter = express.Router().use(bodyParser.json());
 
 // register endpoint, asumsikan data pengguna sudah lengkap dari frontend
-authRouter.post('/register', (request, response, next) => {
+authRouter.post('/register', (request, response) => {
     const newUser = {
         email: request.body.email,
         password: request.body.password,

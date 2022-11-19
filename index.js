@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const http = require('http');
 const passport = require('passport');
+
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -18,6 +19,7 @@ const HOST = '0.0.0.0';
 const PORT = 3000;
 
 const authRouter = require('./routes/authRouter');
+const songRouter = require('./routes/songRouter');
 const userRouter = require('./routes/userRouter');
 
 
@@ -64,7 +66,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/auth', authRouter);
-app.use('/users', userRouter);
+app.use('/song', songRouter);
+app.use('/user', userRouter);
 
 app.use("/", (req, res) => {
   res.statusCode = 200;
