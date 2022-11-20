@@ -4,6 +4,13 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const http = require('http');
 const passport = require('passport');
+const cors = require("cors");
+
+const corsOptions = {
+  origin: '*',
+  credentials: true,
+  optionSuccessStatus: 200
+}
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -26,13 +33,14 @@ const userRouter = require('./routes/userRouter');
 const app = express();
 app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
+app.use(cors(corsOptions));
 
 const url = config.url;
 const connect = mongoose.connect(url);
 console.log(url)
 connect.then(() => {
   console.log("Connected to server!");
-  console.log("Inserting admin credentials for BiNotify premium");
+ 
 
   const adminUser = {
     email: "admin@binotify.com",
@@ -41,15 +49,26 @@ connect.then(() => {
     name: "Admin",
     admin: true
   }
-
-  User.register(new User(adminUser), adminUser.password, (error, _) => {
-    if (error){
-      throw(error);
+  
+  User.find({username: adminUser.username}).then(
+    (user) => {
+      if (!user){
+        console.log("Inserting admin credentials for BiNotify premium");
+        User.register(new User(adminUser), adminUser.password, (error, _) => {
+          if (error){
+            throw(error);
+          }
+      
+          console.log("Successfully added admin user!");
+        })
+      } else {
+        console.log("Admin user has existed!")
+      }
     }
+  )
+})
 
-    console.log("Successfully added admin user!");
-  })
-}, (err) => { console.log(err) })
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

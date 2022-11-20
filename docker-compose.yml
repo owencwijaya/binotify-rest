@@ -11,8 +11,8 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=$DB_PASSWORD
     ports:
       - 27017:27017
-    # volumes:
-    #   - db:/data/db
+    volumes:
+      - db:/data/db
   
   mongo-express:
     container_name: mongo-express
@@ -50,5 +50,5 @@ services:
     stdin_open: true
     tty: true
 
-# volumes:
-#   db:
+volumes:
+  db:
