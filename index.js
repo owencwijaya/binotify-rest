@@ -27,8 +27,8 @@ const PORT = 3000;
 
 const authRouter = require('./routes/authRouter');
 const songRouter = require('./routes/songRouter');
+const subsRouter = require('./routes/subsRouter');
 const userRouter = require('./routes/userRouter');
-
 
 const app = express();
 app.use(morgan('dev'));
@@ -86,6 +86,7 @@ app.use(passport.session());
 
 app.use('/auth', authRouter);
 app.use('/song', songRouter);
+app.use('/subs', subsRouter);
 app.use('/user', userRouter);
 
 app.use("/", (req, res) => {
