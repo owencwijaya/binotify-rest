@@ -42,30 +42,30 @@ connect.then(() => {
   console.log("Connected to server!");
  
 
-  const adminUser = {
-    email: "admin@binotify.com",
-    password: "admin",
-    username: "admin",
-    name: "Admin",
-    admin: true
-  }
+  // const adminUser = {
+  //   email: "admin@binotify.com",
+  //   password: "admin",
+  //   username: "admin",
+  //   name: "Admin",
+  //   admin: true
+  // }
   
-  User.find({username: adminUser.username}).then(
-    (user) => {
-      if (user["username"] === undefined){
-        console.log("Inserting admin credentials for BiNotify premium");
-        User.register(new User(adminUser), adminUser.password, (error, _) => {
-          if (error){
-            throw(error);
-          }
+  // User.find({username: adminUser.username}).then(
+  //   (user) => {
+  //     if (user[0]["username"] === undefined){
+  //       console.log("Inserting admin credentials for BiNotify premium");
+  //       User.register(new User(adminUser), adminUser.password, (error, _) => {
+  //         if (error){
+  //           throw(error);
+  //         }
       
-          console.log("Successfully added admin user!");
-        })
-      } else {
-        console.log("Admin user has existed!")
-      }
-    }
-  )
+  //         console.log("Successfully added admin user!");
+  //       })
+  //     } else {
+  //       console.log("Admin user has existed!")
+  //     }
+  //   }
+  // )
 })
 
 

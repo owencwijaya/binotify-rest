@@ -1,0 +1,1 @@
+mongorestore --username root --password 123456 --authenticationDatabase admin --db binotify-rest /dump/binotify-rest

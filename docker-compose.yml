@@ -12,7 +12,9 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - db:/data/db
+      # - db:/data/db
+      - ./mongorestore.sh:/docker-entrypoint-initdb.d/mongorestore.sh
+      - ./dump:/dump
   
   mongo-express:
     container_name: mongo-express
@@ -50,5 +52,5 @@ services:
     stdin_open: true
     tty: true
 
-volumes:
-  db:
+# volumes:
+#   db:
