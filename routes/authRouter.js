@@ -1,6 +1,9 @@
 const bodyParser = require("body-parser");
 const express = require("express");
 const passport = require("passport");
+const dotenv = require("dotenv");
+const soap = require("soap");
+dotenv.config()
 
 const User = require("../schema/user");
 const auth = require("../auth");
@@ -54,15 +57,50 @@ authRouter.post('/register', (request, response) => {
     })
 })
 
-authRouter.post('/login', passport.authenticate('local'), (request, response) => {
-    const authToken = auth.getToken({_id: request.user._id})
+const getAPIKey = async () => {
+    const soapClient = await soap.createClientAsync(
+        `${process.env.SOAP_HOST}/security`
+    )
 
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'application/json');
-    response.json({
-        status: 200,
-        message: "Successfully logged in!",
-        data: authToken,
+    const res = await soapClient.getAPIKey(request.user._id);
+    const APIkey = res[0].return;
+    return APIkey;
+}
+
+authRouter.post('/login', passport.authenticate('local'), (request, response) => {
+    const wsdl = `${process.env.SOAP_HOST}/security?wsdl`
+    console.log(wsdl);
+    soap.createClient(wsdl, (err, client) => {
+        if (err) {
+            response.json({
+                status: 500,
+                message: "Error in connecting to SOAP client",
+                data: err
+            })
+        }
+        console.log(client.describe())
+        client.getAPIKey({user_id: request.user._id}, (err, result) => {
+            if (err) {
+                response.json({
+                    status: 500,
+                    message: "Error in getting API Key from SOAP server",
+                    data: err
+                })
+            }
+
+            const authToken = auth.getToken({_id: request.user._id})
+
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'application/json');
+            response.json({
+                status: 200,
+                message: "Successfully logged in!",
+                data: {
+                    authToken: authToken,
+                    APIKey: result[0].return
+                },
+            })
+        })
     })
 
 })

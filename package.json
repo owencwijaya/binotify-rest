@@ -4,7 +4,7 @@
     "description": "REST API for BiNotify",
     "main": "index.js",
     "scripts": {
-        "start": "node index"
+        "start": "nodeindex.js"
     },
     "author": "Muhammad Risqi Firdaus, Hafidz Rahman Nur Ghozali, Owen Christian Wijaya",
     "dependencies": {
