@@ -12,7 +12,6 @@ services:
     ports:
       - 27017:27017
     volumes:
-      # - db:/data/db
       - ./mongorestore.sh:/docker-entrypoint-initdb.d/mongorestore.sh
       - ./dump:/dump
   
@@ -51,6 +50,3 @@ services:
       - DB_PORT=27017
     stdin_open: true
     tty: true
-
-# volumes:
-#   db:

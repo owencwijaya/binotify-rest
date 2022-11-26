@@ -2,6 +2,7 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const Song = require("../schema/song");
 const User = require("../schema/user");
+const ObjectId = require('mongodb').ObjectId;
 
 const userRouter = express.Router().use(bodyParser.json());
 
@@ -40,7 +41,7 @@ userRouter.get('/:user_id', (request, response, next) => {
 userRouter.get('/:user_id/songs', (request, response, next) => {
 
     // STUB: cek ke soap apakah si user binotify-app punya
-    // akses ke soap
+    // akses ke soapfd
     // sementara ngebalikin dulu list lagu penyanyi
     // harus dibedain juga yang mana yang dari premium, yang mana dari app
     // utk premium, kasusnya bakal dipake untuk penyanyi yang mo edit
