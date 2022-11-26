@@ -43,11 +43,20 @@ exports.jwtPassport = passport.use(new JwtStrategy(options, (jwt_payload, done) 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
 
 exports.verifyAdmin = (request, response, next) => {
-    if (request.user.admin) {
-        next();
+    if (request.user){
+        User.findOne({"_id": request.user._id}, (err, user) => {
+            if (err) {
+                return next(err);
+            }
+
+            if (!(user.admin)){
+                const error = new Error('This user is not an admin')
+                error.status = 401;
+                return next(error);
+            }
+
+            next();
+        })
     }
 
-    const error = new Error('This user is not an admin')
-    error.status = 401;
-    return next(error);
 }

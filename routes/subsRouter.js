@@ -1,5 +1,8 @@
 const bodyParser = require("body-parser");
 const express = require("express");
+const soap = require("soap");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const auth = require("../auth");
 
@@ -8,8 +11,49 @@ const subsRouter = express.Router().use(bodyParser.json());
 
 // user binotify premium meminta list request subscription
 subsRouter.route( '/')
-    .get((request, response, next) => {
+    .get(auth.verifyUser, auth.verifyAdmin, (request, response, next) => {
         // minta ke soap
+        const soapURL = `${process.env.SOAP_HOST}/subscription/getSubs?wsdl`
+        console.log(soapURL);
+        soap.createClient(soapURL, {}, (err, client) => {
+            if (err) {
+                response.statusCode = 500;
+                response.setHeader('Content-Type', 'application/json');
+                response.json({
+                    status: 500,
+                    message: "Error in connecting to SOAP client",
+                    data: err
+                })
+            }
+
+            const user_id = request.user._id.valueOf();
+            // asumsi api key dikirim dari request
+            const api_key = request.body.api_key;
+
+            console.log(client.describe())
+            client.getSubs({
+                api_key: api_key,
+                user_id: user_id
+            }, (err, result) => {
+                if (err) {
+                    response.statusCode = 500;
+                    response.setHeader('Content-Type', 'application/json');
+                    response.json({
+                        status: 500,
+                        message: "Error in getting subscription list",
+                        data: err
+                    })
+                }
+
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'application/json');
+                response.json({
+                    status: 200,
+                    message: "Successfully retrieved user list",
+                    data: result
+                })
+            })
+        })
     })
 
     .put(auth.verifyUser, auth.verifyAdmin, (request, response, next) => {

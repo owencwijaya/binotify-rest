@@ -1,9 +1,8 @@
 const bodyParser = require("body-parser");
 const express = require("express");
 const passport = require("passport");
-const dotenv = require("dotenv");
 const soap = require("soap");
-dotenv.config()
+
 
 const User = require("../schema/user");
 const auth = require("../auth");
@@ -57,30 +56,23 @@ authRouter.post('/register', (request, response) => {
     })
 })
 
-const getAPIKey = async () => {
-    const soapClient = await soap.createClientAsync(
-        `${process.env.SOAP_HOST}/security`
-    )
-
-    const res = await soapClient.getAPIKey(request.user._id);
-    const APIkey = res[0].return;
-    return APIkey;
-}
-
 authRouter.post('/login', passport.authenticate('local'), (request, response) => {
-    const wsdl = `${process.env.SOAP_HOST}/security?wsdl`
-    console.log(wsdl);
-    soap.createClient(wsdl, (err, client) => {
+    const soapURL = `${process.env.SOAP_HOST}/security/getAPIKey?wsdl`
+    soap.createClient(soapURL, {}, (err, client) => {
         if (err) {
+            response.statusCode = 500;
+            response.setHeader('Content-Type', 'application/json');
             response.json({
                 status: 500,
                 message: "Error in connecting to SOAP client",
                 data: err
             })
         }
-        console.log(client.describe())
-        client.getAPIKey({user_id: request.user._id}, (err, result) => {
+
+        client.getAPIKey({user_id: request.user._id.valueOf()}, (err, result) => {
             if (err) {
+                response.statusCode = 500;
+                response.setHeader('Content-Type', 'application/json');
                 response.json({
                     status: 500,
                     message: "Error in getting API Key from SOAP server",
@@ -97,7 +89,7 @@ authRouter.post('/login', passport.authenticate('local'), (request, response) =>
                 message: "Successfully logged in!",
                 data: {
                     authToken: authToken,
-                    APIKey: result[0].return
+                    APIKey: result.return
                 },
             })
         })

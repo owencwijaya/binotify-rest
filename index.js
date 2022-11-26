@@ -52,7 +52,7 @@ connect.then(() => {
   
   User.find({username: adminUser.username}).then(
     (user) => {
-      if (!user){
+      if (user["username"] === undefined){
         console.log("Inserting admin credentials for BiNotify premium");
         User.register(new User(adminUser), adminUser.password, (error, _) => {
           if (error){
