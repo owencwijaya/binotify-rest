@@ -78,7 +78,7 @@ subsRouter.route( '/')
             const api_key = request.body.api_key;
             const creator_id = request.body.creator_id;
             const subscriber_id = request.body.subscriber_id;
-            const new_status = request.body.subscriber_id;
+            const new_status = request.body.new_status;
 
 
             client.updateSubs({
