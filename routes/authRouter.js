@@ -60,9 +60,10 @@ authRouter.post('/login', passport.authenticate('local'), (request, response) =>
     const soapURL = `${process.env.SOAP_HOST}/security/getAPIKey?wsdl`
     soap.createClient(soapURL, {}, (err, client) => {
         if (err) {
+            console.log(err)
             response.statusCode = 500;
             response.setHeader('Content-Type', 'application/json');
-            response.json({
+            return response.json({
                 status: 500,
                 message: "Error in connecting to SOAP client",
                 data: err
@@ -73,7 +74,7 @@ authRouter.post('/login', passport.authenticate('local'), (request, response) =>
             if (err) {
                 response.statusCode = 500;
                 response.setHeader('Content-Type', 'application/json');
-                response.json({
+                return response.json({
                     status: 500,
                     message: "Error in getting API Key from SOAP server",
                     data: err
@@ -82,20 +83,26 @@ authRouter.post('/login', passport.authenticate('local'), (request, response) =>
 
             const authToken = auth.getToken({_id: request.user._id})
 
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'application/json');
-            response.json({
-                status: 200,
-                message: "Successfully logged in!",
-                data: {
-                    authToken: authToken,
-                    APIKey: result.return
-                },
+            User.find({
+                username: request.body.username,
+                password: request.body.password
+            }).then((user) => {
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'application/json');
+                response.json({
+                    status: 200,
+                    message: "Successfully logged in!",
+                    data: {
+                        auth_token: authToken,
+                        api_key: result.return,
+                        is_admin: user[0].admin
+                    },
+                })
             })
         })
     })
-
 })
+
 
 authRouter.get('/logout', (request, response) => {
     if (!request.session){
