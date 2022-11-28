@@ -95,7 +95,7 @@ authRouter.post('/login', passport.authenticate('local'), (request, response) =>
                     data: {
                         auth_token: authToken,
                         api_key: result.return,
-                        is_admin: user[0].admin
+                        user: user
                     },
                 })
             })
