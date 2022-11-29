@@ -6,6 +6,7 @@ const http = require('http');
 const passport = require('passport');
 const cors = require("cors");
 
+
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -42,6 +43,12 @@ console.log(url)
 
 connect.then(() => {
   console.log("Connected to server!");
+
+  // User.find({}).then((users) => {
+  //   users.forEach((user) => {
+  //     User.register(new User(user), user.password)
+  //   })
+  // })
 })
 
 

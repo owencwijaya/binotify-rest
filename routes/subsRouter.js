@@ -8,6 +8,7 @@ const auth = require("../auth");
 
 // ini buat nerusin request ke soap
 const subsRouter = express.Router().use(bodyParser.json());
+const api_key = process.env.SOAP_API_KEY;
 
 // user binotify premium meminta list request subscription
 subsRouter.route( '/')
@@ -28,7 +29,7 @@ subsRouter.route( '/')
 
             const user_id = request.user._id.valueOf();
             // asumsi api key dikirim dari request
-            const api_key = request.body.api_key;
+            // const api_key = api_key;
 
             let page = req.body.page;
 
@@ -67,7 +68,6 @@ subsRouter.route( '/')
         // dari react ngirim creator_id, subscriber_id, ama status 'ACCEPTED' ato 'REJECTED'
         // minta ke soap
         const soapURL = `${process.env.SOAP_HOST}/subscription/updateSubs?wsdl`
-        console.log(soapURL);
         soap.createClient(soapURL, {}, (err, client) => {
             if (err) {
                 response.statusCode = 500;
@@ -80,8 +80,8 @@ subsRouter.route( '/')
             }
 
             const user_id = request.user._id.valueOf();
-            // asumsi api key dikirim dari request
-            const api_key = request.body.api_key;
+
+            // const api_key = api_key;
             const creator_id = request.body.creator_id;
             const subscriber_id = request.body.subscriber_id;
             const new_status = request.body.new_status;
