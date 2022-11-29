@@ -4,9 +4,12 @@ const Song = require("../schema/song");
 const User = require("../schema/user");
 const ObjectId = require('mongodb').ObjectId;
 const soap = require("soap");
+const dotenv = require("dotenv");
+dotenv.config()
 
 
 const userRouter = express.Router().use(bodyParser.json());
+const api_key = process.env.SOAP_API_KEY;
 
 // dapetin daftar pengguna (penyanyi) BiNotify Premium,
 // dipake dari binotify-app
@@ -64,7 +67,8 @@ userRouter.get('/:user_id/songs', (request, response, next) => {
 
         client.checkUserSubbed({
             creator_id: request.params.user_id,
-            subscriber_id: request.query.user_id
+            subscriber_id: request.query.user_id,
+            api_key: api_key
         }, (err, result) => {
             if (err){
                 response.statusCode = 500;

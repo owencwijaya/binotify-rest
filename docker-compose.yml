@@ -48,5 +48,6 @@ services:
       - DB_PASSWORD=$DB_PASSWORD
       - DB_NAME=$DB_DATABASE
       - DB_PORT=27017
+      - SOAP_API_KEY=123456789
     stdin_open: true
     tty: true

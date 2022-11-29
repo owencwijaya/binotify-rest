@@ -1,8 +1,6 @@
 const bodyParser = require("body-parser");
 const express = require("express");
 const passport = require("passport");
-const soap = require("soap");
-
 
 const User = require("../schema/user");
 const auth = require("../auth");
@@ -60,47 +58,24 @@ authRouter.post('/register', (request, response) => {
 authRouter.post('/login', passport.authenticate('local',{
     failureRedirect: '/auth/fail'
 }), async(request, response) => {
-    const soapURL = `${process.env.SOAP_HOST}/security/getAPIKey?wsdl`
-    soap.createClient(soapURL, {}, (err, client) => {
-        if (client === undefined || err) {
-            response.statusCode = 500;
-            response.setHeader('Content-Type', 'application/json');
-            return response.json({
-                status: 500,
-                message: "Error in connecting to SOAP client",
-                data: err
-            })
-            return;
-        }
-        console.log(err)
-        client.getAPIKey({user_id: request.user._id.valueOf()}, async(err, result) => {
-            if (err) {
-                response.statusCode = 500;
-                response.setHeader('Content-Type', 'application/json');
-                return response.json({
-                    status: 500,
-                    message: "Error in getting API Key from SOAP server",
-                    data: err
-                })
-            }
 
-            const authToken = auth.getToken({_id: request.user._id})
+    const authToken = auth.getToken({_id: request.user._id})
 
-            let user= await User.findOne({_id: request.user._id})
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'application/json');
-            response.json({
-                status: 200,
-                message: "Successfully logged in!",
-                data: {
-                    authToken: authToken,
-                    APIKey: result.return,
-                    user: user
-                },
-            })
-        })
+    let user= await User.findOne({_id: request.user._id})
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'application/json');
+    response.json({
+        status: 200,
+        message: "Successfully logged in!",
+        data: {
+            authToken: authToken,
+            APIKey: result.return,
+            user: user
+        },
     })
 })
+
+
 
 authRouter.get('/fail', (request, response)=>{
     response.statusCode = 401;
@@ -111,6 +86,7 @@ authRouter.get('/fail', (request, response)=>{
         data: null
     })
 })
+
 
 authRouter.get('/logout', (request, response) => {
     if (!request.session){
