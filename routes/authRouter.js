@@ -59,10 +59,10 @@ authRouter.post('/register', (request, response) => {
 
 authRouter.post('/login', passport.authenticate('local',{
     failureRedirect: '/auth/fail'
-}), (request, response) => {
+}), async(request, response) => {
     const soapURL = `${process.env.SOAP_HOST}/security/getAPIKey?wsdl`
     soap.createClient(soapURL, {}, (err, client) => {
-        if (err) {
+        if (client === undefined || err) {
             response.statusCode = 500;
             response.setHeader('Content-Type', 'application/json');
             response.json({
@@ -70,9 +70,10 @@ authRouter.post('/login', passport.authenticate('local',{
                 message: "Error in connecting to SOAP client",
                 data: err
             })
+            return;
         }
-
-        client.getAPIKey({user_id: request.user._id.valueOf()}, (err, result) => {
+        console.log(err)
+        client.getAPIKey({user_id: request.user._id.valueOf()}, async(err, result) => {
             if (err) {
                 response.statusCode = 500;
                 response.setHeader('Content-Type', 'application/json');
@@ -85,6 +86,7 @@ authRouter.post('/login', passport.authenticate('local',{
 
             const authToken = auth.getToken({_id: request.user._id})
 
+            let user= await User.findOne({_id: request.user._id})
             response.statusCode = 200;
             response.setHeader('Content-Type', 'application/json');
             response.json({
@@ -92,7 +94,8 @@ authRouter.post('/login', passport.authenticate('local',{
                 message: "Successfully logged in!",
                 data: {
                     authToken: authToken,
-                    APIKey: result.return
+                    APIKey: result.return,
+                    user: user
                 },
             })
         })
