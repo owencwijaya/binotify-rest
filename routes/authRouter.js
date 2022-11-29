@@ -6,6 +6,7 @@ const soap = require("soap");
 
 const User = require("../schema/user");
 const auth = require("../auth");
+const { request, response } = require("express");
 
 const authRouter = express.Router().use(bodyParser.json());
 
@@ -56,7 +57,9 @@ authRouter.post('/register', (request, response) => {
     })
 })
 
-authRouter.post('/login', passport.authenticate('local'), (request, response) => {
+authRouter.post('/login', passport.authenticate('local',{
+    failureRedirect: '/auth/fail'
+}), (request, response) => {
     const soapURL = `${process.env.SOAP_HOST}/security/getAPIKey?wsdl`
     soap.createClient(soapURL, {}, (err, client) => {
         if (err) {
@@ -95,6 +98,16 @@ authRouter.post('/login', passport.authenticate('local'), (request, response) =>
         })
     })
 
+})
+
+authRouter.get('/fail', (request, response)=>{
+    response.statusCode = 401;
+    response.setHeader('Content-Type', 'application/json');
+    response.json({
+        status: 401,
+        message: "Login failed",
+        data: null
+    })
 })
 
 authRouter.get('/logout', (request, response) => {
