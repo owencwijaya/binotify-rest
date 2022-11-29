@@ -3,6 +3,8 @@ const express = require("express");
 const Song = require("../schema/song");
 const User = require("../schema/user");
 const ObjectId = require('mongodb').ObjectId;
+const soap = require("soap");
+
 
 const userRouter = express.Router().use(bodyParser.json());
 
@@ -44,19 +46,60 @@ userRouter.get('/:user_id/songs', (request, response, next) => {
     // akses ke soapfd
     // sementara ngebalikin dulu list lagu penyanyi
     // harus dibedain juga yang mana yang dari premium, yang mana dari app
-    // utk premium, kasusnya bakal dipake untuk penyanyi yang mo edit
-    Song.find({id_penyanyi: request.params.user_id}).then(
-        (songs) => {
-            response.statusCode = 200;
-            response.setHeader("Content-Type", "application/json");
-            response.json({
-                status: 200,
-                message: "Successfully retrieved song list!",
-                data: songs
+    // utk premium, kasusnya bakal dipake untuk penyanyi yang mo edit\
+
+
+    const soapURL = `${process.env.SOAP_HOST}/subscription/checkUserSubbed?wsdl`
+    soap.createClient(soapURL, {}, (err, client) => {
+        if (err) {
+            console.log(err)
+            response.statusCode = 500;
+            response.setHeader('Content-Type', 'application/json');
+            return response.json({
+                status: 500,
+                message: "Error in connecting to SOAP client",
+                data: err
             })
-        },
-        (error) => next(error))
-    .catch((error) => next(error))
+        }
+
+        client.checkUserSubbed({
+            creator_id: request.params.user_id,
+            subscriber_id: request.query.user_id
+        }, (err, result) => {
+            if (err){
+                response.statusCode = 500;
+                response.setHeader('Content-Type', 'application/json');
+                return response.json({
+                    status: 500,
+                    message: "Error in getting subscription status from SOAP server",
+                    data: null
+                })
+            }
+
+            if (!result.return){
+                response.statusCode = 401;
+                response.setHeader('Content-Type', 'application/json');
+                return response.json({
+                    status: 401,
+                    message: "User hasn't subscribed to artist yet!",
+                    data: null
+                })
+            }
+
+            Song.find({id_penyanyi: request.params.user_id}).then(
+                (songs) => {
+                    response.statusCode = 200;
+                    response.setHeader("Content-Type", "application/json");
+                    response.json({
+                        status: 200,
+                        message: "Successfully retrieved song list!",
+                        data: songs
+                    })
+                },
+                (error) => next(error))
+            .catch((error) => next(error))
+        })
+    })
 })
 
 

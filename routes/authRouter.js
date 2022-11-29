@@ -65,7 +65,7 @@ authRouter.post('/login', passport.authenticate('local',{
         if (client === undefined || err) {
             response.statusCode = 500;
             response.setHeader('Content-Type', 'application/json');
-            response.json({
+            return response.json({
                 status: 500,
                 message: "Error in connecting to SOAP client",
                 data: err
@@ -77,7 +77,7 @@ authRouter.post('/login', passport.authenticate('local',{
             if (err) {
                 response.statusCode = 500;
                 response.setHeader('Content-Type', 'application/json');
-                response.json({
+                return response.json({
                     status: 500,
                     message: "Error in getting API Key from SOAP server",
                     data: err
@@ -100,7 +100,6 @@ authRouter.post('/login', passport.authenticate('local',{
             })
         })
     })
-
 })
 
 authRouter.get('/fail', (request, response)=>{

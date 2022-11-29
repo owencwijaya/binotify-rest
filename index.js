@@ -29,6 +29,7 @@ const authRouter = require('./routes/authRouter');
 const songRouter = require('./routes/songRouter');
 const subsRouter = require('./routes/subsRouter');
 const userRouter = require('./routes/userRouter');
+const validateRouter = require('./routes/validateRouter');
 
 const app = express();
 app.use(morgan('dev'));
@@ -38,34 +39,9 @@ app.use(cors(corsOptions));
 const url = config.url;
 const connect = mongoose.connect(url);
 console.log(url)
+
 connect.then(() => {
   console.log("Connected to server!");
- 
-
-  // const adminUser = {
-  //   email: "admin@binotify.com",
-  //   password: "admin",
-  //   username: "admin",
-  //   name: "Admin",
-  //   admin: true
-  // }
-  
-  // User.find({username: adminUser.username}).then(
-  //   (user) => {
-  //     if (user[0]["username"] === undefined){
-  //       console.log("Inserting admin credentials for BiNotify premium");
-  //       User.register(new User(adminUser), adminUser.password, (error, _) => {
-  //         if (error){
-  //           throw(error);
-  //         }
-      
-  //         console.log("Successfully added admin user!");
-  //       })
-  //     } else {
-  //       console.log("Admin user has existed!")
-  //     }
-  //   }
-  // )
 })
 
 
@@ -88,6 +64,7 @@ app.use('/auth', authRouter);
 app.use('/song', songRouter);
 app.use('/subs', subsRouter);
 app.use('/user', userRouter);
+app.use('/validate', validateRouter);
 
 app.use("/", (req, res) => {
   res.statusCode = 200;

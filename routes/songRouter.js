@@ -11,19 +11,20 @@ const songRouter = express.Router().use(bodyParser.json());
 
 songRouter.route('/')
     // get all songs
-    .get((request, response, next) => {
-        Song.find({}).then(
+    .get(auth.verifyUser, (request, response, next) => {
+        Song.find({id_penyanyi: request.user._id}).then(
             (songs) => {
+                console.log(songs)
                 response.statusCode = 200;
-                response.setHeader('Content-Type', 'application/json');
+                response.setHeader("Content-Type", "application/json");
                 response.json({
                     status: 200,
-                    message: "Successfully obtained list of songs",
+                    message: "Successfully retrieved song list!",
                     data: songs
                 })
             },
-            (err) => next(err))
-        .catch((err) => next(err))
+            (error) => next(error))
+        .catch((error) => next(error))
     })
     // create song
     .post(auth.verifyUser, (request, response, next) => {
