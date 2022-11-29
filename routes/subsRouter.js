@@ -30,10 +30,16 @@ subsRouter.route( '/')
             // asumsi api key dikirim dari request
             const api_key = request.body.api_key;
 
+            let page = req.body.page;
+
+            let limit = req.body.limit;
+
             console.log(client.describe())
             client.getSubs({
                 api_key: api_key,
-                user_id: user_id
+                user_id: user_id,
+                page: page,
+                limit: limit
             }, (err, result) => {
                 if (err) {
                     response.statusCode = 500;
