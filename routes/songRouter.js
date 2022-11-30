@@ -21,10 +21,7 @@ songRouter.route('/')
                     response.json({
                         status: 200,
                         message: "Successfully retrieved song list!",
-                        data: {
-                            songs: songs,
-                            page_count: Math.ceil(count / request.query.limit)
-                        }
+                        data: songs
                     })
                 })
 
