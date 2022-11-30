@@ -37,7 +37,7 @@ subsRouter.route( '/')
             console.log(client.describe())
             client.getSubs({
                 api_key: api_key,
-                page: page,
+                page: (page-1)*limit,
                 limit: limit
             }, (err, result) => {
                 console.log(err)
@@ -56,7 +56,7 @@ subsRouter.route( '/')
                 response.json({
                     status: 200,
                     message: "Successfully retrieved subscription list",
-                    data: result.return["subscription-lists"].subscription
+                    data: result
                 })
             })
         })
