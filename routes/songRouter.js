@@ -12,17 +12,28 @@ const songRouter = express.Router().use(bodyParser.json());
 songRouter.route('/')
     // get all songs
     .get(auth.verifyUser, (request, response, next) => {
+<<<<<<< HEAD
         console.log(request.query)
         Song.find({id_penyanyi: request.user._id},null,{skip: (request.query.page-1)*request.query.limit, limit: request.query.limit}).then(
+=======
+        Song.find({id_penyanyi: request.user._id},{},{skip: (request.query.page-1)*request.query.limit, limit: request.query.limit}).then(
+>>>>>>> b1e89abb610a40093c0ae32c817d713d837716e5
             (songs) => {
-                console.log(songs)
-                response.statusCode = 200;
-                response.setHeader("Content-Type", "application/json");
-                response.json({
-                    status: 200,
-                    message: "Successfully retrieved song list!",
-                    data: songs
+                Song.count({id_penyanyi: request.user._id}).then((allSongs) => {
+                    console.log(songs)
+                    console.log(Math.ceil(allSongs/request.query.limit))
+                    response.statusCode = 200;
+                    response.setHeader("Content-Type", "application/json");
+                    response.json({
+                        status: 200,
+                        message: "Successfully retrieved song list!",
+                        data: {
+                            songs: songs,
+                            totalPages : Math.ceil(allSongs/request.query.limit)
+                        }
+                    })
                 })
+
             },
             (error) => {
                 console.log(error);

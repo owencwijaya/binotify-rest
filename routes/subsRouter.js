@@ -30,12 +30,9 @@ subsRouter.route( '/')
             }
 
             const user_id = request.user._id.valueOf();
-            // asumsi api key dikirim dari request
-            // const api_key = api_key;
 
-            let page = request.body.page;
-
-            let limit = request.body.limit;
+            let page = request.query.page;
+            let limit = request.query.limit;
 
             console.log(client.describe())
             client.getSubs({
@@ -43,7 +40,8 @@ subsRouter.route( '/')
                 page: page,
                 limit: limit
             }, (err, result) => {
-                if (err) {
+                console.log(err)
+                if (err !== null) {
                     response.statusCode = 500;
                     response.setHeader('Content-Type', 'application/json');
                     response.json({
@@ -57,8 +55,8 @@ subsRouter.route( '/')
                 response.setHeader('Content-Type', 'application/json');
                 response.json({
                     status: 200,
-                    message: "Successfully retrieved user list",
-                    data: result
+                    message: "Successfully retrieved subscription list",
+                    data: result.return["subscription-lists"].subscription
                 })
             })
         })
@@ -70,7 +68,7 @@ subsRouter.route( '/')
         // minta ke soap
         const soapURL = `${process.env.SOAP_HOST}/subscription/updateSubs?wsdl`
         soap.createClient(soapURL, {}, (err, client) => {
-            if (err) {
+            if (err !== null) {
                 response.statusCode = 500;
                 response.setHeader('Content-Type', 'application/json');
                 response.json({
@@ -81,8 +79,6 @@ subsRouter.route( '/')
             }
 
             const user_id = request.user._id.valueOf();
-
-            // const api_key = api_key;
             const creator_id = request.body.creator_id;
             const subscriber_id = request.body.subscriber_id;
             const new_status = request.body.new_status;
@@ -95,7 +91,7 @@ subsRouter.route( '/')
                 subscriber_id: subscriber_id,
                 new_status: new_status
             }, (err, result) => {
-                if (err) {
+                if (err !== null) {
                     response.statusCode = 500;
                     response.setHeader('Content-Type', 'application/json');
                     response.json({
@@ -116,10 +112,6 @@ subsRouter.route( '/')
         })
 
 
-    })
-
-    .post(auth.verifyUser, auth.verifyAdmin, (request, response, next) => {
-        // dari binotify app tambahin ke soap, sudah langsung dari app ke server
     })
 
 module.exports = subsRouter
