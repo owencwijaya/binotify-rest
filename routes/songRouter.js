@@ -12,7 +12,7 @@ const songRouter = express.Router().use(bodyParser.json());
 songRouter.route('/')
     // get all songs
     .get(auth.verifyUser, (request, response, next) => {
-        Song.find({id_penyanyi: request.user._id},{},{skip: (request.query.page-1)*limit, limit: request.query.limit}).then(
+        Song.find({id_penyanyi: request.user._id},{},{skip: (request.query.page-1)*request.query.limit, limit: request.query.limit}).then(
             (songs) => {
                 console.log(songs)
                 response.statusCode = 200;

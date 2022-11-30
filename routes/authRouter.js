@@ -69,7 +69,7 @@ authRouter.post('/login', passport.authenticate('local',{
         message: "Successfully logged in!",
         data: {
             authToken: authToken,
-            APIKey: result.return,
+            // APIKey: result.return,
             user: user
         },
     })
