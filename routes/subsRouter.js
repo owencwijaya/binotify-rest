@@ -30,9 +30,8 @@ subsRouter.route( '/')
 
             const user_id = request.user._id.valueOf();
 
-            let page = request.body.page;
-
-            let limit = request.body.limit;
+            let page = request.query.page;
+            let limit = request.query.limit;
 
             console.log(client.describe())
             client.getSubs({
@@ -57,7 +56,7 @@ subsRouter.route( '/')
                 response.json({
                     status: 200,
                     message: "Successfully retrieved subscription list",
-                    data: result
+                    data: result.return["subscription-lists"].subscription
                 })
             })
         })
