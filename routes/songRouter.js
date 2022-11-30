@@ -14,14 +14,20 @@ songRouter.route('/')
     .get(auth.verifyUser, (request, response, next) => {
         Song.find({id_penyanyi: request.user._id},{},{skip: (request.query.page-1)*request.query.limit, limit: request.query.limit}).then(
             (songs) => {
-                console.log(songs)
-                response.statusCode = 200;
-                response.setHeader("Content-Type", "application/json");
-                response.json({
-                    status: 200,
-                    message: "Successfully retrieved song list!",
-                    data: songs
+                Song.count({id_penyanyi: request.user._id}).then((count) => {
+                    console.log(songs)
+                    response.statusCode = 200;
+                    response.setHeader("Content-Type", "application/json");
+                    response.json({
+                        status: 200,
+                        message: "Successfully retrieved song list!",
+                        data: {
+                            songs: songs,
+                            page_count: Math.ceil(count / request.query.limit)
+                        }
+                    })
                 })
+
             },
             (error) => next(error))
         .catch((error) => next(error))
