@@ -17,28 +17,29 @@ subsRouter.route( '/')
         const soapURL = `${process.env.SOAP_HOST}/subscription/getSubs?wsdl`
         console.log(soapURL);
         soap.createClient(soapURL, {}, (err, client) => {
-            if (err) {
+            if (err || client === null || client === undefined) {
+                console.log(client)
                 response.statusCode = 500;
                 response.setHeader('Content-Type', 'application/json');
                 response.json({
                     status: 500,
                     message: "Error in connecting to SOAP client",
-                    data: err
+                    data: err.message
                 })
+                return;
             }
 
             const user_id = request.user._id.valueOf();
             // asumsi api key dikirim dari request
             // const api_key = api_key;
 
-            let page = req.body.page;
+            let page = request.body.page;
 
-            let limit = req.body.limit;
+            let limit = request.body.limit;
 
             console.log(client.describe())
             client.getSubs({
                 api_key: api_key,
-                user_id: user_id,
                 page: page,
                 limit: limit
             }, (err, result) => {

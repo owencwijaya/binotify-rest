@@ -12,7 +12,8 @@ const songRouter = express.Router().use(bodyParser.json());
 songRouter.route('/')
     // get all songs
     .get(auth.verifyUser, (request, response, next) => {
-        Song.find({id_penyanyi: request.user._id},{},{skip: (request.query.page-1)*limit, limit: request.query.limit}).then(
+        console.log(request.query)
+        Song.find({id_penyanyi: request.user._id},null,{skip: (request.query.page-1)*request.query.limit, limit: request.query.limit}).then(
             (songs) => {
                 console.log(songs)
                 response.statusCode = 200;
@@ -23,8 +24,13 @@ songRouter.route('/')
                     data: songs
                 })
             },
-            (error) => next(error))
-        .catch((error) => next(error))
+            (error) => {
+                console.log(error);
+                console.log(error.message)
+                next(error)})
+        .catch((error) => {
+        console.log(error)
+        next(error)})
     })
     // create song
     .post(auth.verifyUser, (request, response, next) => {
