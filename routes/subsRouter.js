@@ -29,15 +29,13 @@ subsRouter.route( '/')
                 return;
             }
 
-            const user_id = request.user._id.valueOf();
-
             let page = request.query.page;
             let limit = request.query.limit;
 
             console.log(client.describe())
             client.getSubs({
                 api_key: api_key,
-                page: (page-1)*limit,
+                page: page,
                 limit: limit
             }, (err, result) => {
                 console.log(err)
