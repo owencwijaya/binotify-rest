@@ -56,7 +56,7 @@ subsRouter.route( '/')
                 response.json({
                     status: 200,
                     message: "Successfully retrieved subscription list",
-                    data: result
+                    data: result.return["subscription-lists"].subscription               
                 })
             })
         })
