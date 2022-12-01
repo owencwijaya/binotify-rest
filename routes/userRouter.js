@@ -14,7 +14,7 @@ const api_key = process.env.SOAP_API_KEY;
 // dapetin daftar pengguna (penyanyi) BiNotify Premium,
 // dipake dari binotify-app
 userRouter.get('/', (request, response, next) => {
-    User.find({admin: false}).then((users) => {
+    User.find({admin: false}, {name: 1}).then((users) => {
         response.statusCode = 200;
         response.setHeader("Content-Type", "application/json");
         response.json({
@@ -44,13 +44,6 @@ userRouter.get('/:user_id', (request, response, next) => {
 })
 
 userRouter.get('/:user_id/songs', (request, response, next) => {
-
-    // STUB: cek ke soap apakah si user binotify-app punya
-    // akses ke soapfd
-    // sementara ngebalikin dulu list lagu penyanyi
-    // harus dibedain juga yang mana yang dari premium, yang mana dari app
-    // utk premium, kasusnya bakal dipake untuk penyanyi yang mo edit\
-
 
     const soapURL = `${process.env.SOAP_HOST}/subscription/checkUserSubbed?wsdl`
     soap.createClient(soapURL, {}, (err, client) => {
@@ -92,13 +85,19 @@ userRouter.get('/:user_id/songs', (request, response, next) => {
 
             Song.find({id_penyanyi: request.params.user_id}).then(
                 (songs) => {
-                    response.statusCode = 200;
-                    response.setHeader("Content-Type", "application/json");
-                    response.json({
-                        status: 200,
-                        message: "Successfully retrieved song list!",
-                        data: songs
+                    User.findOne({_id: request.params.user_id}, {name: 1}).then((artist) => {
+                        response.statusCode = 200;
+                        response.setHeader("Content-Type", "application/json");
+                        response.json({
+                            status: 200,
+                            message: "Successfully retrieved song list!",
+                            data: {
+                                songs: songs,
+                                name: artist.name
+                            }
+                        })
                     })
+
                 },
                 (error) => next(error))
             .catch((error) => next(error))
