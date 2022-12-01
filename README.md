@@ -46,6 +46,8 @@ Pengguna juga harus melakukan _setup_ terkait repo berikut:
 docker-compose down && docker-compose build && docker-compose up
 ```
 Apabila terkonfigurasi benar, _endpoint_ dapat diakses pada http://localhost:3000
+- Database MongoDB dapat diakses pada http://localhost:27017
+- Interface Mongo Express dapat diakses pada http://localhost:8081
 
 ## Pembagian Tugas
 Legenda NIM adalah sebagai berikut:
@@ -59,4 +61,4 @@ Daftar Pengerjaan
 - Backend BiNotify Premium / App Fungsi Mendapatkan Daftar Lagu per Artis: 13520117, 13520124
 - Backend BiNotify Premium Pengelolaan Lagu: 13520124
 - Backend BiNotify Premium Mendapatkan Daftar Subscription: 13520117, 13520124
-- Backend BiNotify Premium Mendapatkan Daftar Subscription: 13520117, 13520124
+- Backend BiNotify Premium Menerima / Menolak Subscription: 13520124
