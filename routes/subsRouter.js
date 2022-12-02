@@ -92,7 +92,7 @@ subsRouter.route( '/')
                 console.log(err, result);
                 console.log(result.return);
                 if (err !== null || result.return !== "Success") {
-                    // response.statusCode = 500;
+                    response.statusCode = 204;
                     response.setHeader('Content-Type', 'application/json');
                     response.json({
                         status: 500,
