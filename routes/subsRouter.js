@@ -89,23 +89,25 @@ subsRouter.route( '/')
                 subscriber_id: subscriber_id,
                 new_status: new_status
             }, (err, result) => {
-                if (err !== null) {
-                    response.statusCode = 500;
+                console.log(err, result);
+                console.log(result.return);
+                if (err !== null || result.return !== "Success") {
+                    // response.statusCode = 500;
                     response.setHeader('Content-Type', 'application/json');
                     response.json({
                         status: 500,
                         message: "Error in updating subscription",
                         data: err
                     })
+                } else {
+                    response.statusCode = 200;
+                    response.setHeader('Content-Type', 'application/json');
+                    response.json({
+                        status: 200,
+                        message: "Successfully updated subscription",
+                        data: result     
+                    })
                 }
-
-                response.statusCode = 200;
-                response.setHeader('Content-Type', 'application/json');
-                response.json({
-                    status: 200,
-                    message: "Successfully updated subscription",
-                    data: result
-                })
             })
         })
 
